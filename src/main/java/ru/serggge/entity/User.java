@@ -19,5 +19,6 @@ public class User {
     private String name;
     private String email;
     private int age;
+    @Column(name = "created_at")
     private Instant createdAt;
 }

@@ -1,7 +1,7 @@
 package ru.serggge.dao;
 
 import ru.serggge.entity.User;
-
+import java.util.Collection;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -13,4 +13,6 @@ public interface UserRepository {
     User update(User user);
 
     void deleteById(Long userId);
+
+    Collection<User> findAll();
 }

@@ -3,8 +3,9 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
+import ru.serggge.util.ScannerHolder;
 
-import java.util.InputMismatchException;
+import java.time.Instant;
 
 @RequiredArgsConstructor
 public class UpdateUserCommand implements Command {
@@ -19,34 +20,26 @@ public class UpdateUserCommand implements Command {
     }
 
     private User createEntity() {
-        return new User(userId(), name(), email(), age(), null);
+        return new User(userId(), name(), email(), age(), Instant.now());
     }
 
     private Long userId() {
         System.out.println("Enter user id: ");
-        return nextLong();
+        return ScannerHolder.readLongValue();
     }
 
     private String name() {
-        System.out.println("Enter new name or press Enter to skip:");
-        String newName = nextLine();
-        return newName.isBlank() ? null : newName;
+        System.out.println("Enter new name:");
+        return ScannerHolder.readStringValue();
     }
 
     private String email() {
-        System.out.println("Enter new email or press Enter to skip:");
-        String newEmail = nextLine();
-        return newEmail.isBlank() ? null : newEmail;
+        System.out.println("Enter new email:");
+        return ScannerHolder.readStringValue();
     }
 
     private int age() {
-        System.out.println("Enter new age or press Enter to skip:");
-        String userInput = nextLine();
-        try {
-            int newAge = Integer.parseInt(userInput);
-            return newAge > 0 ? newAge : -1;
-        } catch (InputMismatchException | NumberFormatException e) {
-            return -1;
-        }
+        System.out.println("Enter new age:");
+        return ScannerHolder.readIntValue();
     }
 }

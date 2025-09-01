@@ -3,25 +3,24 @@ package ru.serggge;
 import ru.serggge.command.*;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.dao.UserRepositoryImpl;
+import ru.serggge.util.ScannerHolder;
 import java.util.*;
 
 public class App {
 
-    public static final Scanner SCANNER = new Scanner(System.in);
-
     public static void main(String[] args) {
-        // инициализация команд
+        // инициализация репозитория и команд
         Map<Button, Command> commands = initCommands();
         // выполняем в бесконечном цикле, пока пользователь не выберет "Выход"
         while (true) {
             printMenu();
             try {
                 // пользователь вводит CRUD операцию или Выход, которую хочет выполнить, её и выполняем
-                String userChoice = SCANNER.nextLine();
+                String userChoice = ScannerHolder.readStringValue();
                 Button button = Button.valueOf(userChoice.toUpperCase());
                 commands.get(button).execute();
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("Input error. Try again:");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Input error. Unknown command. Try again!");
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
@@ -30,6 +29,7 @@ public class App {
 
     /**
      * Блок инициализации. Инстанцируем репозиторий и добавляем команды
+     *
      * @return Хеш мапа команд
      */
     private static Map<Button, Command> initCommands() {
@@ -40,6 +40,7 @@ public class App {
         commands.put(Button.UPDATE, new UpdateUserCommand(userRepository));
         commands.put(Button.FIND, new FindUserCommand(userRepository));
         commands.put(Button.DELETE, new DeleteUserCommand(userRepository));
+        commands.put(Button.ALL, new FindAllCommand(userRepository));
         return commands;
     }
 
@@ -48,22 +49,13 @@ public class App {
      */
     private static void printMenu() {
         String textInfo = """
-                Enter the command:создать нового пользователя
-                
+                Enter the command:
                 CREATE: create a new user
                 UPDATE: update user info
                 FIND: find user by id
                 DELETE: delete user by id
-                EXIT: exit the program
-                """;
+                ALL: find all users
+                EXIT: exit the program""";
         System.out.println(textInfo);
-    }
-
-    public enum Button {
-        EXIT,
-        CREATE,
-        UPDATE,
-        FIND,
-        DELETE
     }
 }

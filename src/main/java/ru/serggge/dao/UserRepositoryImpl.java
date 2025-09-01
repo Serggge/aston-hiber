@@ -5,10 +5,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import org.hibernate.query.Query;
 import ru.serggge.entity.User;
-import java.util.Optional;
-import java.util.Properties;
+
+import java.util.*;
 
 public class UserRepositoryImpl implements UserRepository {
 
@@ -21,21 +20,16 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
             session.persist(user);
-            transaction.commit();
+            session.flush();
+            return user;
         }
-        return user;
     }
 
     @Override
     public Optional<User> findById(Long userId) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            Query<User> namedQuery = session.createNamedQuery("findById", User.class)
-                                            .setParameter("id", userId);
-            User user = namedQuery.getSingleResultOrNull();
-            transaction.commit();
+            User user = session.find(User.class, userId);
             return Optional.ofNullable(user);
         }
     }
@@ -43,29 +37,40 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User update(User user) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
             user = session.merge(user);
-            transaction.commit();
+            return user;
         }
-        return user;
     }
 
     @Override
     public void deleteById(Long userId) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            Query<User> namedQuery = session.createNamedQuery("deleteById", User.class)
-                                            .setParameter("id", userId);
-            namedQuery.executeUpdate();
+            transaction = session.beginTransaction();
+            User user = session.find(User.class, userId);
+            if (Objects.nonNull(user)) {
+                session.remove(user);
+            }
             transaction.commit();
-            session.flush();
+        } catch (Exception e) {
+            if (Objects.nonNull(transaction)) {
+                transaction.rollback();
+            }
+        }
+    }
+
+    @Override
+    public Collection<User> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("from User", User.class)
+                          .list();
         }
     }
 
     private void init() {
         Properties properties = new Properties();
         properties.put(Environment.JAKARTA_JDBC_DRIVER, "org.postgresql.Driver");
-        properties.put(Environment.JAKARTA_JDBC_URL, "jdbc:postgresql://localhost:5432/astonhiber");
+        properties.put(Environment.JAKARTA_JDBC_URL, "jdbc:postgresql://localhost:6543/astonhiberdb");
         properties.put(Environment.JAKARTA_JDBC_USER, "root");
         properties.put(Environment.JAKARTA_JDBC_PASSWORD, "root");
         properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
@@ -73,7 +78,6 @@ public class UserRepositoryImpl implements UserRepository {
 
         sessionFactory = new Configuration()
                 .setProperties(properties)
-                .configure()
                 .addAnnotatedClass(User.class)
                 .buildSessionFactory();
     }

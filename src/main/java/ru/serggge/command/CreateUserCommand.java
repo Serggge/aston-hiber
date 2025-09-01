@@ -3,6 +3,7 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
+import ru.serggge.util.ScannerHolder;
 import java.time.Instant;
 
 @RequiredArgsConstructor
@@ -24,26 +25,18 @@ public class CreateUserCommand implements Command {
     private String name() {
         // считываем из консоли имя сущности
         System.out.println("Enter name:");
-        return nextLine();
+        return ScannerHolder.readStringValue();
     }
 
     private String email() {
         // считываем из консоли емаил сущности
         System.out.println("Enter email:");
-        return nextLine();
+        return ScannerHolder.readStringValue();
     }
 
     private int age() {
-        // считываем из консоли возраст сущности, не принимаем значения меньше 0
+        // считываем из консоли возраст сущности
         System.out.println("Enter age:");
-        int age = -1;
-        while (age < 0) {
-            age = nextInt();
-            if (age < 0) {
-                System.out.println("Age can't be negative");
-            }
-        }
-        return age;
+        return ScannerHolder.readIntValue();
     }
-
 }

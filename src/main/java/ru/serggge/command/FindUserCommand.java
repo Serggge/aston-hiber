@@ -2,6 +2,7 @@ package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
+import ru.serggge.util.ScannerHolder;
 
 @RequiredArgsConstructor
 public class FindUserCommand implements Command {
@@ -10,8 +11,9 @@ public class FindUserCommand implements Command {
 
     @Override
     public void execute() {
+        System.out.println("Enter user ID:");
         // считываем из консоли айди сущности для поиска в БД
-        long userId = nextLong();
+        Long userId = ScannerHolder.readLongValue();
         userRepository.findById(userId)
                       .ifPresentOrElse(System.out::println,
                               () -> System.out.println("User not found"));
