@@ -6,5 +6,6 @@ public enum Button {
     UPDATE,
     FIND,
     DELETE,
-    ALL
+    ALL,
+    INVALID_OPERATION;
 }

@@ -3,10 +3,14 @@ package ru.serggge;
 import ru.serggge.command.*;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.dao.UserRepositoryImpl;
+import ru.serggge.interceptors.ExceptionHandling;
 import ru.serggge.util.ScannerHolder;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class App {
+
+    private static final Logger log = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
         // инициализация репозитория и команд
@@ -14,17 +18,16 @@ public class App {
         // выполняем в бесконечном цикле, пока пользователь не выберет "Выход"
         while (true) {
             printMenu();
-            try {
-                // пользователь вводит CRUD операцию или Выход, которую хочет выполнить, её и выполняем
-                String userChoice = ScannerHolder.readStringValue();
-                Button button = Button.valueOf(userChoice.toUpperCase());
-                commands.get(button).execute();
-            } catch (IllegalArgumentException e) {
-                System.out.println("Input error. Unknown command. Try again!");
-            } catch (Exception e) {
-                System.out.println("An unexpected error occurred: " + e.getMessage());
-            }
+            // пользователь вводит CRUD операцию, которую хочет выполнить, или выбирает выход из программы
+            Button button = selectButton();
+            commands.get(button).execute();
         }
+    }
+
+    @ExceptionHandling
+    private static Button selectButton() {
+        String userChoice = ScannerHolder.readStringValue();
+        return Button.valueOf(userChoice.toUpperCase());
     }
 
     /**
@@ -41,6 +44,7 @@ public class App {
         commands.put(Button.FIND, new FindUserCommand(userRepository));
         commands.put(Button.DELETE, new DeleteUserCommand(userRepository));
         commands.put(Button.ALL, new FindAllCommand(userRepository));
+        commands.put(Button.INVALID_OPERATION, new InvalidOperationCommand());
         return commands;
     }
 

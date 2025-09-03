@@ -3,19 +3,23 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
+import ru.serggge.interceptors.ExceptionHandling;
 import ru.serggge.util.ScannerHolder;
 import java.time.Instant;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class CreateUserCommand implements Command {
 
     private final UserRepository userRepository;
+    private final Logger log = Logger.getLogger(CreateUserCommand.class.getName());
 
+    @ExceptionHandling
     @Override
     public void execute() {
         User entity = createEntity();
         entity = userRepository.save(entity);
-        System.out.println("User crated: " + entity);
+        log.info("User crated: " + entity);
     }
 
     private User createEntity() {

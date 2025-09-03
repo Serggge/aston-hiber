@@ -10,7 +10,6 @@
   <name>aston-2-1</name>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.version>17</java.version>
   </properties>
 
@@ -35,6 +34,11 @@
           <artifactId>lombok</artifactId>
           <version>1.18.38</version>
           <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.jboss.weld.se</groupId>
+          <artifactId>weld-se-core</artifactId>
+          <version>6.0.3.Final</version>
       </dependency>
   </dependencies>
     <build>

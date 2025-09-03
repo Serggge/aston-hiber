@@ -6,7 +6,6 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import ru.serggge.entity.User;
-
 import java.util.*;
 
 public class UserRepositoryImpl implements UserRepository {
@@ -20,26 +19,37 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.persist(user);
-            session.flush();
-            return user;
+            transaction.commit();
         }
+        return user;
     }
 
     @Override
     public Optional<User> findById(Long userId) {
+        User user;
         try (Session session = sessionFactory.openSession()) {
-            User user = session.find(User.class, userId);
-            return Optional.ofNullable(user);
+            Transaction transaction = session.beginTransaction();
+            user = session.find(User.class, userId);
+            transaction.commit();
         }
+        return Optional.ofNullable(user);
     }
 
     @Override
     public User update(User user) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
             user = session.merge(user);
-            return user;
+            transaction.commit();
+        } catch (Exception e) {
+            if (Objects.nonNull(transaction)) {
+                transaction.rollback();
+            }
         }
+        return user;
     }
 
     @Override
@@ -61,10 +71,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Collection<User> findAll() {
+        List<User> users;
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("from User", User.class)
-                          .list();
+            Transaction transaction = session.beginTransaction();
+            users = session.createQuery("from User", User.class)
+                                         .list();
+            transaction.commit();
         }
+        return users;
     }
 
     private void init() {
