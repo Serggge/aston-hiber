@@ -7,5 +7,6 @@ public enum Button {
     FIND,
     DELETE,
     ALL,
-    INVALID_OPERATION;
+    PRINT_MENU,
+    INVALID_OPERATION
 }
