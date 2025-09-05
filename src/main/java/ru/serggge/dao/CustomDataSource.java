@@ -9,6 +9,7 @@ import java.util.Properties;
 
 public class CustomDataSource {
 
+    // класс отвечает за предоставление соединений к БД
     private final SessionFactory sessionFactory;
 
     public CustomDataSource() {

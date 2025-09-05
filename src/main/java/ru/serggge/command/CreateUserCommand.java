@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.interceptors.ExceptionHandling;
-import ru.serggge.util.ScannerHolder;
+import ru.serggge.util.OperationReader;
 import java.time.Instant;
 import java.util.logging.Logger;
 
@@ -29,18 +29,18 @@ public class CreateUserCommand implements Command {
     private String name() {
         // считываем из консоли имя сущности
         System.out.println("Enter name:");
-        return ScannerHolder.readStringValue();
+        return OperationReader.readStringValue();
     }
 
     private String email() {
         // считываем из консоли емаил сущности
         System.out.println("Enter email:");
-        return ScannerHolder.readStringValue();
+        return OperationReader.readStringValue();
     }
 
     private int age() {
         // считываем из консоли возраст сущности
         System.out.println("Enter age:");
-        return ScannerHolder.readIntValue();
+        return OperationReader.readIntValue();
     }
 }

@@ -18,7 +18,7 @@ public class CommandSelector {
         return commands.get(button);
     }
 
-    // Блок инициализации. Инстанцируем репозиторий и добавляем команды
+    // Блок инициализации. Инстанцируем репозиторий и добавляем объекты команды
     private static Map<Button, Command> initCommands() {
         UserRepository userRepository = new UserRepositoryImpl();
         Map<Button, Command> commands = new HashMap<>();

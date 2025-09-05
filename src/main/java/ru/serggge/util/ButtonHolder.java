@@ -10,7 +10,8 @@ public class ButtonHolder {
 
     @ExceptionHandling
     public static Button selectOperation() {
-        String userChoice = ScannerHolder.readStringValue();
+        // считываем в стандартном потоке ввода операцию, возвращаем соответствующий енум
+        String userChoice = OperationReader.readStringValue();
         return Button.valueOf(userChoice.toUpperCase());
     }
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.interceptors.ExceptionHandling;
-import ru.serggge.util.ScannerHolder;
+import ru.serggge.util.OperationReader;
 import java.time.Instant;
 import java.util.logging.Logger;
 
@@ -28,21 +28,21 @@ public class UpdateUserCommand implements Command {
 
     private Long userId() {
         System.out.println("Enter user id: ");
-        return ScannerHolder.readLongValue();
+        return OperationReader.readLongValue();
     }
 
     private String name() {
         System.out.println("Enter new name:");
-        return ScannerHolder.readStringValue();
+        return OperationReader.readStringValue();
     }
 
     private String email() {
         System.out.println("Enter new email:");
-        return ScannerHolder.readStringValue();
+        return OperationReader.readStringValue();
     }
 
     private int age() {
         System.out.println("Enter new age:");
-        return ScannerHolder.readIntValue();
+        return OperationReader.readIntValue();
     }
 }

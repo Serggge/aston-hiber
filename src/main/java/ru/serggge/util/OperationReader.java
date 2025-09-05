@@ -3,12 +3,12 @@ package ru.serggge.util;
 import ru.serggge.exception.UserInputException;
 import java.util.Scanner;
 
-public class ScannerHolder {
-    
+public class OperationReader {
+
+    // Утилитный класс, отвечающий за обработку пользовательского ввода операций в консоли
     private static final Scanner scanner = new Scanner(System.in);
     
-    private ScannerHolder() {
-
+    private OperationReader() {
     }
 
     public static String readStringValue() {

@@ -14,12 +14,15 @@ public class ExceptionInterceptor {
 
     @AroundInvoke
     public Object interceptException(InvocationContext ctx) throws Exception {
+        // реализация перехватчика исключений
         try {
             return ctx.proceed();
         } catch (UserInputException e) {
+            // перехватывает ошибки ввода ParseInt\ParseLong
             System.out.println(e.getMessage());
             return null;
         } catch (IllegalArgumentException e) {
+            // перехватывает ошибки, когда пользователь вводит операцию не добавленную в Енум
             return String.valueOf("INVALID_OPERATION");
         }
     }
