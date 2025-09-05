@@ -1,6 +1,7 @@
 package ru.serggge.util;
 
 import ru.serggge.command.Button;
+import ru.serggge.exception.UnknownOperationException;
 
 public class ButtonHolder {
 
@@ -13,7 +14,7 @@ public class ButtonHolder {
         try {
             return Button.valueOf(userChoice.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return Button.INVALID_OPERATION;
+            throw new UnknownOperationException("Can't recognize the operation: " + userChoice, e);
         }
     }
 }

@@ -30,7 +30,6 @@ public class CommandSelector {
         commands.put(Button.DELETE, new DeleteUserCommand(repository));
         commands.put(Button.ALL, new FindAllCommand(repository));
         commands.put(Button.PRINT_MENU, new PrintMenuCommand());
-        commands.put(Button.INVALID_OPERATION, new InvalidOperationCommand());
         return commands;
     }
 }
