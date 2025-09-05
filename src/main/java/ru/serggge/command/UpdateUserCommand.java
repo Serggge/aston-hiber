@@ -1,9 +1,8 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
-import ru.serggge.dao.UserRepository;
+import ru.serggge.dao.Repository;
 import ru.serggge.entity.User;
-import ru.serggge.interceptors.ExceptionHandling;
 import ru.serggge.util.OperationReader;
 import java.time.Instant;
 import java.util.logging.Logger;
@@ -11,14 +10,13 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class UpdateUserCommand implements Command {
 
-    private final UserRepository userRepository;
+    private final Repository<User> repository;
     private final Logger log = Logger.getLogger(UpdateUserCommand.class.getName());
 
-    @ExceptionHandling
     @Override
     public void execute() {
         User entity = createEntity();
-        entity = userRepository.update(entity);
+        entity = repository.update(entity);
         log.info("User updated: " + entity);
     }
 

@@ -3,6 +3,7 @@ package ru.serggge;
 import ru.serggge.command.*;
 import ru.serggge.util.ButtonHolder;
 import ru.serggge.util.CommandSelector;
+import ru.serggge.util.ExceptionHandler;
 
 public class App {
 
@@ -13,12 +14,16 @@ public class App {
         while (true) {
             // печать в консоль информационного меню пользователя
             commandSelector.get(Button.PRINT_MENU)
-                    .execute();
-            // здесь пользователь вводит CRUD операцию, которую хочет выполнить
-            Button operation = ButtonHolder.selectOperation();
-            // здесь выполняем её через соответствующий объект команды
-            commandSelector.get(operation)
-                    .execute();
+                           .execute();
+            try {
+                // здесь пользователь вводит CRUD операцию, которую хочет выполнить
+                Button operation = ButtonHolder.selectOperation();
+                // здесь выполняем её через соответствующий объект команды
+                commandSelector.get(operation)
+                               .execute();
+            } catch (RuntimeException e) {
+                ExceptionHandler.handle(e);
+            }
         }
     }
 }

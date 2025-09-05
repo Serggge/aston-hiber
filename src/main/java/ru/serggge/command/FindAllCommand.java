@@ -1,16 +1,17 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
-import ru.serggge.dao.UserRepository;
+import ru.serggge.dao.Repository;
+import ru.serggge.entity.User;
 
 @RequiredArgsConstructor
 public class FindAllCommand implements Command {
 
-    private final UserRepository userRepository;
+    private final Repository<User> repository;
 
     @Override
     public void execute() {
-        userRepository.findAll()
-                .forEach(System.out::println);
+        repository.findAll()
+                  .forEach(System.out::println);
     }
 }

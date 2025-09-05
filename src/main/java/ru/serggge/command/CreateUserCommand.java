@@ -1,9 +1,8 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
-import ru.serggge.dao.UserRepository;
+import ru.serggge.dao.Repository;
 import ru.serggge.entity.User;
-import ru.serggge.interceptors.ExceptionHandling;
 import ru.serggge.util.OperationReader;
 import java.time.Instant;
 import java.util.logging.Logger;
@@ -11,14 +10,13 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class CreateUserCommand implements Command {
 
-    private final UserRepository userRepository;
+    private final Repository<User> repository;
     private final Logger log = Logger.getLogger(CreateUserCommand.class.getName());
 
-    @ExceptionHandling
     @Override
     public void execute() {
         User entity = createEntity();
-        entity = userRepository.save(entity);
+        entity = repository.save(entity);
         log.info("User crated: " + entity);
     }
 
@@ -33,7 +31,7 @@ public class CreateUserCommand implements Command {
     }
 
     private String email() {
-        // считываем из консоли емаил сущности
+        // считываем из консоли почтовый адрес сущности
         System.out.println("Enter email:");
         return OperationReader.readStringValue();
     }
