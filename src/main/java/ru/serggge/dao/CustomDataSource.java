@@ -5,7 +5,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import ru.serggge.entity.User;
-
 import java.util.Properties;
 
 public class CustomDataSource {
@@ -28,6 +27,8 @@ public class CustomDataSource {
     }
 
     public Session getSession() {
-        return sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            return session;
+        }
     }
 }
