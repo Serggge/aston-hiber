@@ -21,12 +21,16 @@ public class UserRepository implements Repository<User> {
     @Override
     public User save(User user) {
         entityManager.persist(user);
+        entityManager.detach(user);
         return user;
     }
 
     @Override
     public Optional<User> findById(Long userId) {
         User user = entityManager.find(User.class, userId);
+        if (Objects.nonNull(user)) {
+            entityManager.detach(user);
+        }
         return Optional.ofNullable(user);
     }
 
