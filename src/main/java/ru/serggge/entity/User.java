@@ -2,16 +2,18 @@ package ru.serggge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import ru.serggge.annotations.UnitName;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(name = "users")
+@UnitName(name = "user-persistence")
 @Getter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

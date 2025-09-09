@@ -3,41 +3,45 @@ package ru.serggge.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import ru.serggge.annotations.UnitName;
 import ru.serggge.entity.User;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class UserRepository implements Repository<User> {
 
-    private final EntityManager entityManager;
+    private final EntityManagerFactory emf;
 
     public UserRepository() {
-        try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("user-persistence")) {
-            this.entityManager = emf.createEntityManager();
-        }
+        String unitName = readUnitName();
+        this.emf = DataSourceFactory.fromUnitName(unitName);
     }
 
     @Override
     public User save(User user) {
-        entityManager.persist(user);
-        entityManager.detach(user);
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            entityManager.persist(user);
+            entityManager.detach(user);
+        }
         return user;
     }
 
     @Override
     public Optional<User> findById(Long userId) {
-        User user = entityManager.find(User.class, userId);
-        if (Objects.nonNull(user)) {
-            entityManager.detach(user);
+        User user;
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            user = entityManager.find(User.class, userId);
+            if (Objects.nonNull(user)) {
+                entityManager.detach(user);
+            }
         }
         return Optional.ofNullable(user);
     }
 
     @Override
     public User update(User user) {
-        executeInsideTransaction(entityManager -> entityManager.merge(user));
-        return user;
+            executeInsideTransaction(entityManager -> entityManager.merge(user));
+            return user;
     }
 
     @Override
@@ -52,20 +56,33 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public Collection<User> findAll() {
-        return entityManager.createQuery("from User", User.class)
-                            .getResultList();
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            return entityManager.createQuery("from User", User.class)
+                                .getResultList();
+        }
     }
 
     private void executeInsideTransaction(Consumer<EntityManager> action) {
-        EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
+        EntityTransaction transaction = null;
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
             action.accept(entityManager);
-            tx.commit();
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+                throw e;
+            }
         }
-        catch (RuntimeException e) {
-            tx.rollback();
-            throw e;
+    }
+
+    private String readUnitName() {
+        UnitName annotation = User.class.getAnnotation(UnitName.class);
+        if (annotation != null) {
+            return annotation.name();
+        } else {
+            throw new IllegalStateException("Must declare unit name in the entity class");
         }
     }
 }
