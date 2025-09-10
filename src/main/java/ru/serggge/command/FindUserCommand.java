@@ -1,14 +1,14 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
-import ru.serggge.dao.Repository;
+import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.util.OperationReader;
 
 @RequiredArgsConstructor
 public class FindUserCommand implements Command {
 
-    private final Repository<User> repository;
+    private final UserRepository<User> repository;
 
     @Override
     public void execute() {

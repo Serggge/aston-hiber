@@ -1,7 +1,7 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
-import ru.serggge.dao.Repository;
+import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.util.OperationReader;
 import java.time.Instant;
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class UpdateUserCommand implements Command {
 
-    private final Repository<User> repository;
+    private final UserRepository<User> repository;
     private final Logger log = Logger.getLogger(UpdateUserCommand.class.getName());
 
     @Override

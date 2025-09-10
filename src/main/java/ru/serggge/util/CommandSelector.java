@@ -1,8 +1,8 @@
 package ru.serggge.util;
 
 import ru.serggge.command.*;
-import ru.serggge.dao.Repository;
 import ru.serggge.dao.UserRepository;
+import ru.serggge.dao.UserUserRepositoryImpl;
 import ru.serggge.entity.User;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +19,9 @@ public class CommandSelector {
         return commands.get(button);
     }
 
-    // Блок инициализации. Инстанцируем репозиторий и добавляем объекты команды
+    // Блок инициализации. Инстанцируем репозиторий и добавляем объекты команды для каждого CRUDa
     private static Map<Button, Command> initCommands() {
-        Repository<User> repository = new UserRepository();
+        UserRepository<User> repository = new UserUserRepositoryImpl();
         Map<Button, Command> commands = new HashMap<>();
         commands.put(Button.EXIT, new ExitCommand());
         commands.put(Button.CREATE, new CreateUserCommand(repository));

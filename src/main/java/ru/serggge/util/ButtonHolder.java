@@ -9,7 +9,7 @@ public class ButtonHolder {
     }
 
     public static Button selectOperation() {
-        // считываем в стандартном потоке ввода операцию, возвращаем соответствующий енум
+        // считываем в стандартном потоке ввода желаемую CRUD операцию, возвращаем соответствующий енум
         String userChoice = OperationReader.readStringValue();
         try {
             return Button.valueOf(userChoice.toUpperCase());

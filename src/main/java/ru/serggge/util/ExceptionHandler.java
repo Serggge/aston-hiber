@@ -9,6 +9,7 @@ public class ExceptionHandler {
     private ExceptionHandler() {
     }
 
+    // блок централизованной обработки Exception
     public static void handle(Exception e) {
         if (e.getClass().isAssignableFrom(UserInputException.class)) {
             System.out.println(e.getMessage());
