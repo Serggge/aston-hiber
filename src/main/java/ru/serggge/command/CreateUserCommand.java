@@ -20,7 +20,7 @@ public class CreateUserCommand implements Command {
     }
 
     private User createEntity() {
-        return new User(null, name(), email(), age(), null, null);
+        return new User(name(), email(), age());
     }
 
     private String name() {

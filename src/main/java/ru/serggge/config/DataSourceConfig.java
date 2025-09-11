@@ -26,10 +26,9 @@ public class DataSourceConfig {
         // конфигурация для среды DEVELOPMENT
         Properties properties = new Properties();
         properties.put(JAKARTA_JDBC_DRIVER, "org.h2.Driver");
-        properties.put(JAKARTA_JDBC_URL, "jdbc:h2:mem:testdb");
+        properties.put(JAKARTA_JDBC_URL, "jdbc:h2:mem:testdb;NON_KEYWORDS=USER");
         properties.put(JAKARTA_JDBC_USER, "sa");
         properties.put(JAKARTA_JDBC_PASSWORD, "sa");
-        properties.put(DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         properties.put(HBM2DDL_AUTO, "create-drop");
         properties.put(SHOW_SQL, "true");
         properties.put(FORMAT_SQL, "true");

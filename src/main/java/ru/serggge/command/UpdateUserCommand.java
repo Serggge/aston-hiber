@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.util.ConsoleReader;
-import java.time.Instant;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -15,13 +14,15 @@ public class UpdateUserCommand implements Command {
 
     @Override
     public void execute() {
-        User entity = createEntity();
+        User entity = createUpdatedEntity();
         entity = repository.update(entity);
         log.info("User updated: " + entity);
     }
 
-    private User createEntity() {
-        return new User(userId(), name(), email(), age(), Instant.now());
+    private User createUpdatedEntity() {
+        User user = new User(name(), email(), age());
+        user.setId(userId());
+        return user;
     }
 
     private Long userId() {
@@ -39,7 +40,7 @@ public class UpdateUserCommand implements Command {
         return ConsoleReader.readStringValue();
     }
 
-    private int age() {
+    private Integer age() {
         System.out.println("Enter new age:");
         return ConsoleReader.readIntValue();
     }

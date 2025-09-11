@@ -94,7 +94,7 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
             action.accept(entityManager);
             transaction.commit();
         } catch (RuntimeException e) {
-            if (transaction != null) {
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
                 throw e;
             }

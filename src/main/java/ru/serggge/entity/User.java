@@ -13,15 +13,19 @@ import java.time.Instant;
 @Getter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter
     private Long id;
+    @NonNull
     private String name;
+    @NonNull
     private String email;
-    private int age;
+    @NonNull
+    private Integer age;
     @Column(name = "CREATED_AT", insertable = false, updatable = false)
     @Generated
     private Instant createdAt;
