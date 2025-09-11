@@ -3,8 +3,7 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
-import ru.serggge.util.OperationReader;
-import java.time.Instant;
+import ru.serggge.util.ConsoleReader;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -21,24 +20,24 @@ public class CreateUserCommand implements Command {
     }
 
     private User createEntity() {
-        return new User(null, name(), email(), age(), Instant.now());
+        return new User(null, name(), email(), age(), null, null);
     }
 
     private String name() {
         // считываем из консоли имя сущности
         System.out.println("Enter name:");
-        return OperationReader.readStringValue();
+        return ConsoleReader.readStringValue();
     }
 
     private String email() {
         // считываем из консоли почтовый адрес сущности
         System.out.println("Enter email:");
-        return OperationReader.readStringValue();
+        return ConsoleReader.readStringValue();
     }
 
     private int age() {
         // считываем из консоли возраст сущности
         System.out.println("Enter age:");
-        return OperationReader.readIntValue();
+        return ConsoleReader.readIntValue();
     }
 }

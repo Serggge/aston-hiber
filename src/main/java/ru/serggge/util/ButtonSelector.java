@@ -3,14 +3,14 @@ package ru.serggge.util;
 import ru.serggge.command.Button;
 import ru.serggge.exception.UnknownOperationException;
 
-public class ButtonHolder {
+public class ButtonSelector {
 
-    private ButtonHolder() {
+    private ButtonSelector() {
     }
 
     public static Button selectOperation() {
         // считываем в стандартном потоке ввода желаемую CRUD операцию, возвращаем соответствующий енум
-        String userChoice = OperationReader.readStringValue();
+        String userChoice = ConsoleReader.readStringValue();
         try {
             return Button.valueOf(userChoice.toUpperCase());
         } catch (IllegalArgumentException e) {

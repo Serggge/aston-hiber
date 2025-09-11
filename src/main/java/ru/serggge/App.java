@@ -2,9 +2,9 @@ package ru.serggge;
 
 import ru.serggge.command.*;
 import ru.serggge.config.Profile;
-import ru.serggge.util.ButtonHolder;
+import ru.serggge.util.ButtonSelector;
 import ru.serggge.util.CommandLineProcessor;
-import ru.serggge.util.CommandSelector;
+import ru.serggge.util.CommandHolder;
 import ru.serggge.util.ExceptionHandler;
 
 public class App {
@@ -16,16 +16,16 @@ public class App {
         // определяем профиль, с которым выполняется приложение (DEVELOP/PRODUCTION)
         profile = CommandLineProcessor.readProfile(args);
         // создаём объект, который будет управлять командами, обрабатывающими CRUD операции
-        CommandSelector commandSelector = new CommandSelector();
+        CommandHolder commandHolder = new CommandHolder();
         // выполняем в бесконечном цикле, пока пользователь не выберет "Выход"
         while (true) {
             // печать в консоль информационного меню пользователя
-            commandSelector.get(Button.PRINT_MENU).execute();
+            commandHolder.get(Button.PRINT_MENU).execute();
             try {
                 // здесь пользователь вводит CRUD операцию, которую хочет выполнить
-                Button operation = ButtonHolder.selectOperation();
+                Button operation = ButtonSelector.selectOperation();
                 // здесь выполняем её через соответствующий объект команды
-                commandSelector.get(operation).execute();
+                commandHolder.get(operation).execute();
             } catch (RuntimeException e) {
                 // обрабатываем выброшенные исключения
                 ExceptionHandler.handle(e);

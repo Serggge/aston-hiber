@@ -4,11 +4,11 @@ import ru.serggge.exception.UserInputException;
 import java.util.Scanner;
 
 // Утилитный класс, отвечающий за обработку пользовательского ввода операций в консоли
-public class OperationReader {
+public class ConsoleReader {
 
     private static final Scanner scanner = new Scanner(System.in);
     
-    private OperationReader() {
+    private ConsoleReader() {
     }
 
     public static String readStringValue() {

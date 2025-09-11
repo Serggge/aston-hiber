@@ -28,10 +28,24 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
     }
 
     @Override
-    public Optional<User> findById(Long userId) {
+    public Optional<User> findByIdIgnoreActivity(Long userId) {
         User user;
         try (EntityManager entityManager = emf.createEntityManager()) {
             user = entityManager.find(User.class, userId);
+            if (Objects.nonNull(user)) {
+                entityManager.detach(user);
+            }
+        }
+        return Optional.ofNullable(user);
+    }
+
+    @Override
+    public Optional<User> findById(Long userId) {
+        User user;
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            user = entityManager.createQuery("SELECT u FROM User u where u.id=:userId AND u.isActive=TRUE", User.class)
+                                          .setParameter("userId", userId)
+                                          .getSingleResult();
             if (Objects.nonNull(user)) {
                 entityManager.detach(user);
             }
@@ -52,6 +66,15 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
             if (Objects.nonNull(user)) {
                 entityManager.remove(user);
             }
+        });
+    }
+
+    @Override
+    public void deactivateUser(Long userId) {
+        executeInsideTransaction(entityManager -> {
+            User user = entityManager.find(User.class, userId);
+            user.setIsActive(false);
+            entityManager.merge(user);
         });
     }
 

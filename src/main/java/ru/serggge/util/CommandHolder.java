@@ -7,11 +7,11 @@ import ru.serggge.entity.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandSelector {
+public class CommandHolder {
 
     private final Map<Button, Command> commands;
 
-    public CommandSelector() {
+    public CommandHolder() {
         this.commands = initCommands();
     }
 

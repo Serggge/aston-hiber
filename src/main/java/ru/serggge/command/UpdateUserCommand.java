@@ -3,7 +3,7 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
-import ru.serggge.util.OperationReader;
+import ru.serggge.util.ConsoleReader;
 import java.time.Instant;
 import java.util.logging.Logger;
 
@@ -26,21 +26,21 @@ public class UpdateUserCommand implements Command {
 
     private Long userId() {
         System.out.println("Enter user id: ");
-        return OperationReader.readLongValue();
+        return ConsoleReader.readLongValue();
     }
 
     private String name() {
         System.out.println("Enter new name:");
-        return OperationReader.readStringValue();
+        return ConsoleReader.readStringValue();
     }
 
     private String email() {
         System.out.println("Enter new email:");
-        return OperationReader.readStringValue();
+        return ConsoleReader.readStringValue();
     }
 
     private int age() {
         System.out.println("Enter new age:");
-        return OperationReader.readIntValue();
+        return ConsoleReader.readIntValue();
     }
 }

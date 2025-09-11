@@ -2,12 +2,13 @@ package ru.serggge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Generated;
 import ru.serggge.annotations.UnitName;
 import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USERS")
 @UnitName(name = "user-persistence")
 @Getter
 @ToString
@@ -21,6 +22,11 @@ public class User implements Serializable {
     private String name;
     private String email;
     private int age;
-    @Column(name = "created_at")
+    @Column(name = "CREATED_AT", insertable = false, updatable = false)
+    @Generated
     private Instant createdAt;
+    @Column(name = "ACTIVE", insertable = false)
+    @Generated
+    @Setter
+    private Boolean isActive;
 }

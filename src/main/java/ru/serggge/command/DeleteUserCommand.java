@@ -3,7 +3,7 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
-import ru.serggge.util.OperationReader;
+import ru.serggge.util.ConsoleReader;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class DeleteUserCommand implements Command {
     public void execute() {
         // считываем из консоли айди сущности для удаления из БД
         System.out.println("Enter user ID:");
-        long userId = OperationReader.readLongValue();
+        long userId = ConsoleReader.readLongValue();
         repository.deleteById(userId);
         log.info("User deleted");
     }

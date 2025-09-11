@@ -7,11 +7,16 @@ public interface UserRepository<T> {
 
     T save(T entity);
 
-    Optional<T> findById(Long id);
+    Optional<T> findByIdIgnoreActivity(Long userId);
+
+    Optional<T> findById(Long userId);
 
     T update(T entity);
 
-    void deleteById(Long id);
+    @Deprecated
+    void deleteById(Long userId);
+
+    void deactivateUser(Long userId);
 
     Collection<T> findAll();
 }
