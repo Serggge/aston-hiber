@@ -1,6 +1,5 @@
 package ru.serggge.config;
 
-import ru.serggge.App;
 import java.util.Properties;
 import static org.hibernate.cfg.JdbcSettings.*;
 import static org.hibernate.cfg.SchemaToolingSettings.HBM2DDL_AUTO;
@@ -8,21 +7,17 @@ import static org.hibernate.cfg.SchemaToolingSettings.HBM2DDL_AUTO;
 // конфигурация проперти для EntityMangerFactory (для разных сред развёртывания)
 public class DataSourceConfig {
 
-    private final Profile profile;
-
-    public DataSourceConfig() {
-        // Datasource выбирается в зависимости от среды выполнения: DEVELOPMENT/PRODUCTION
-        this.profile = App.profile;
+    private DataSourceConfig() {
     }
 
-    public Properties getProperties() {
+    public static Properties getProperties(Profile profile) {
         return switch (profile) {
-            case DEVELOPMENT -> developmentProperties();
+            case DEVELOPMENT, TEST -> developmentProperties();
             case PRODUCTION -> productionProperties();
         };
     }
 
-    private Properties developmentProperties() {
+    private static Properties developmentProperties() {
         // конфигурация для среды DEVELOPMENT
         Properties properties = new Properties();
         properties.put(JAKARTA_JDBC_DRIVER, "org.h2.Driver");
@@ -35,7 +30,7 @@ public class DataSourceConfig {
         return properties;
     }
 
-    private Properties productionProperties() {
+    private static Properties productionProperties() {
         // конфигурация для среды PRODUCTION
         Properties properties = new Properties();
         properties.put(JAKARTA_JDBC_DRIVER, "org.postgresql.Driver");

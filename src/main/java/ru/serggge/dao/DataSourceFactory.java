@@ -2,7 +2,9 @@ package ru.serggge.dao;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.cfg.Configuration;
+import ru.serggge.App;
 import ru.serggge.config.DataSourceConfig;
+import ru.serggge.config.Profile;
 import ru.serggge.entity.User;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,8 @@ public class DataSourceFactory {
             EntityManagerFactory emf;
             lock.lock();
             // получаем проперти для EntityMangerFactory из конфига
-            Properties dataSourceProperties = new DataSourceConfig().getProperties();
+            Profile profile = App.profile;
+            Properties dataSourceProperties = DataSourceConfig.getProperties(profile);
             emf = dataSources.getOrDefault(unitName,
                     new Configuration()
                             .setProperties(dataSourceProperties)
