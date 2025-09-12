@@ -1,27 +1,28 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.util.ConsoleReader;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
+@Slf4j
 public class UpdateUserCommand implements Command {
 
     private final UserRepository<User> repository;
-    private final Logger log = Logger.getLogger(UpdateUserCommand.class.getName());
 
     @Override
     public void execute() {
         User entity = createUpdatedEntity();
         entity = repository.update(entity);
-        log.info("User updated: " + entity);
+        log.info("User updated: {}", entity);
     }
 
     private User createUpdatedEntity() {
+        Long userId = userId();
         User user = new User(name(), email(), age());
-        user.setId(userId());
+        user.setId(userId);
         return user;
     }
 

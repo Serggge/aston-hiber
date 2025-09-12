@@ -2,10 +2,7 @@ package ru.serggge;
 
 import ru.serggge.command.*;
 import ru.serggge.config.Profile;
-import ru.serggge.util.ButtonSelector;
-import ru.serggge.util.CommandLineProcessor;
-import ru.serggge.util.CommandHolder;
-import ru.serggge.util.ExceptionHandler;
+import ru.serggge.util.*;
 
 public class App {
 
@@ -23,7 +20,7 @@ public class App {
             commandHolder.get(Button.PRINT_MENU).execute();
             try {
                 // здесь пользователь вводит CRUD операцию, которую хочет выполнить
-                Button operation = ButtonSelector.selectOperation();
+                Button operation = ConsoleReader.readOperation();
                 // здесь выполняем её через соответствующий объект команды
                 commandHolder.get(operation).execute();
             } catch (RuntimeException e) {

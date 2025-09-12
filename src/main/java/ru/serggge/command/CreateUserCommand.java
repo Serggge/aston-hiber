@@ -1,22 +1,22 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.util.ConsoleReader;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
+@Slf4j
 public class CreateUserCommand implements Command {
 
     private final UserRepository<User> repository;
-    private final Logger log = Logger.getLogger(CreateUserCommand.class.getName());
 
     @Override
     public void execute() {
         User entity = createEntity();
         entity = repository.save(entity);
-        log.info("User crated: " + entity);
+        log.info("User created: " + entity);
     }
 
     private User createEntity() {

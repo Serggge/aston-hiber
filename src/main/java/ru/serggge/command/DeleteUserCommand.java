@@ -1,23 +1,37 @@
 package ru.serggge.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.entity.User;
 import ru.serggge.util.ConsoleReader;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DeleteUserCommand implements Command {
 
     private final UserRepository<User> repository;
-    private final Logger log = Logger.getLogger(DeleteUserCommand.class.getName());
 
     @Override
     public void execute() {
-        // считываем из консоли айди сущности для удаления из БД
         System.out.println("Enter user ID:");
         long userId = ConsoleReader.readLongValue();
-        repository.deleteById(userId);
+        System.out.println("Delete user permanently? (Y/N)");
+        boolean isConfirmed = ConsoleReader.readBooleanValue();
+        if (isConfirmed) {
+            eraseFromDatabase(userId);
+        } else {
+            setInactive(userId);
+        }
+    }
+
+    private void eraseFromDatabase(Long userId) {
+        repository.eraseById(userId);
         log.info("User deleted");
+    }
+
+    private void setInactive(Long userId) {
+        repository.deleteById(userId);
+        log.info("User deactivated");
     }
 }

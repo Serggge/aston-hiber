@@ -23,54 +23,56 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
         try (EntityManager entityManager = emf.createEntityManager()) {
             entityManager.persist(user);
             entityManager.detach(user);
+            return user;
         }
-        return user;
     }
 
     @Override
     public Optional<User> findByIdIgnoreActivity(Long userId) {
-        User user;
         try (EntityManager entityManager = emf.createEntityManager()) {
-            user = entityManager.find(User.class, userId);
-            if (Objects.nonNull(user)) {
+            User user = entityManager.find(User.class, userId);
+            if (user != null) {
                 entityManager.detach(user);
             }
+            return Optional.ofNullable(user);
         }
-        return Optional.ofNullable(user);
     }
 
     @Override
     public Optional<User> findById(Long userId) {
-        User user;
         try (EntityManager entityManager = emf.createEntityManager()) {
-            user = entityManager.createQuery("SELECT u FROM User u where u.id=:userId AND u.isActive=TRUE", User.class)
-                                          .setParameter("userId", userId)
-                                          .getSingleResult();
-            if (Objects.nonNull(user)) {
+            User user = entityManager.createQuery("""
+                            SELECT u
+                            FROM User u
+                            WHERE u.id=:userId AND u.isActive=TRUE
+                            """, User.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            if (user != null) {
                 entityManager.detach(user);
             }
+            return Optional.ofNullable(user);
         }
-        return Optional.ofNullable(user);
     }
 
     @Override
     public User update(User user) {
-            executeInsideTransaction(entityManager -> entityManager.merge(user));
-            return user;
+        executeInsideTransaction(entityManager -> entityManager.merge(user));
+        return user;
     }
 
     @Override
-    public void deleteById(Long userId) {
+    public void eraseById(Long userId) {
         executeInsideTransaction(entityManager -> {
             User user = entityManager.find(User.class, userId);
-            if (Objects.nonNull(user)) {
+            if (user != null) {
                 entityManager.remove(user);
             }
         });
     }
 
     @Override
-    public void deactivateUser(Long userId) {
+    public void deleteById(Long userId) {
         executeInsideTransaction(entityManager -> {
             User user = entityManager.find(User.class, userId);
             user.setIsActive(false);
@@ -82,7 +84,7 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
     public Collection<User> findAll() {
         try (EntityManager entityManager = emf.createEntityManager()) {
             return entityManager.createQuery("from User", User.class)
-                                .getResultList();
+                    .getResultList();
         }
     }
 

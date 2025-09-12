@@ -1,12 +1,9 @@
 package ru.serggge.dao;
 
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.serggge.config.DataSourceConfig;
 import ru.serggge.entity.User;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;

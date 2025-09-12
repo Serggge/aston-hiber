@@ -14,9 +14,9 @@ public interface UserRepository<T> {
     T update(T entity);
 
     @Deprecated
-    void deleteById(Long userId);
+    void eraseById(Long userId);
 
-    void deactivateUser(Long userId);
+    void deleteById(Long userId);
 
     Collection<T> findAll();
 }

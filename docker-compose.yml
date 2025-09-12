@@ -52,6 +52,25 @@ services:
     networks:
       - postgres
 
+  application:
+    build: ./
+    image: hiber_image
+    container_name: hiber_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - PROFILE: production
+      - POSTGRES_URL: localhost
+      - POSTGRES_PORT: 6543
+      - POSTGRES_DB: astonhiberdb
+      - POSTGRES_USER: root
+      - POSTGRES_PASSWORD: root
+    networks:
+      - postgres
+
+
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
