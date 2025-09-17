@@ -1,22 +1,23 @@
 package ru.serggge.dao;
 
+import ru.serggge.entity.User;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface UserRepository<T> {
+public interface UserRepository {
 
-    T save(T entity);
+    User save(User entity);
 
-    Optional<T> findByIdIgnoreActivity(Long userId);
+    Optional<User> findById(Long userId);
 
-    Optional<T> findById(Long userId);
+    Optional<User> findActiveUser(Long userId);
 
-    T update(T entity);
+    User update(User entity);
 
     @Deprecated
-    void eraseById(Long userId);
-
     void deleteById(Long userId);
 
-    Collection<T> findAll();
+    void disableUser(Long userId);
+
+    Collection<User> findAll();
 }

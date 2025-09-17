@@ -3,67 +3,62 @@ package ru.serggge.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import ru.serggge.annotations.UnitName;
+import jakarta.persistence.TypedQuery;
 import ru.serggge.entity.User;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class UserUserRepositoryImpl implements UserRepository<User> {
+public class UserUserRepositoryImpl implements UserRepository {
 
     private final EntityManagerFactory emf;
 
     public UserUserRepositoryImpl() {
-        // unitName берём в аннотации над классом сущности
-        String unitName = readUnitName();
-        this.emf = DataSourceFactory.fromUnitName(unitName);
+        this.emf = DataSourceFactory.forEntityClass(User.class);
     }
 
     @Override
     public User save(User user) {
-        try (EntityManager entityManager = emf.createEntityManager()) {
+        transactional(entityManager -> {
             entityManager.persist(user);
-            entityManager.detach(user);
-            return user;
-        }
-    }
-
-    @Override
-    public Optional<User> findByIdIgnoreActivity(Long userId) {
-        try (EntityManager entityManager = emf.createEntityManager()) {
-            User user = entityManager.find(User.class, userId);
-            if (user != null) {
-                entityManager.detach(user);
-            }
-            return Optional.ofNullable(user);
-        }
-    }
-
-    @Override
-    public Optional<User> findById(Long userId) {
-        try (EntityManager entityManager = emf.createEntityManager()) {
-            User user = entityManager.createQuery("""
-                            SELECT u
-                            FROM User u
-                            WHERE u.id=:userId AND u.isActive=TRUE
-                            """, User.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-            if (user != null) {
-                entityManager.detach(user);
-            }
-            return Optional.ofNullable(user);
-        }
-    }
-
-    @Override
-    public User update(User user) {
-        executeInsideTransaction(entityManager -> entityManager.merge(user));
+        });
         return user;
     }
 
     @Override
-    public void eraseById(Long userId) {
-        executeInsideTransaction(entityManager -> {
+    public Optional<User> findById(Long userId) {
+        User user = transactionalWithResult(entityManager ->
+                entityManager.find(User.class, userId));
+        return Optional.ofNullable(user);
+    }
+
+    @Override
+    public Optional<User> findActiveUser(Long userId) {
+        User user = transactionalWithResult(entityManager -> {
+            TypedQuery<User> query = entityManager.createQuery("""
+                    SELECT u
+                    FROM User u
+                    WHERE u.id=:userId AND u.isActive=TRUE
+                    """, User.class);
+            query.setParameter("userId", userId);
+            try {
+                return query.getSingleResult();
+            } catch (RuntimeException e) {
+                return null;
+            }
+        });
+        return Optional.ofNullable(user);
+    }
+
+    @Override
+    public User update(User user) {
+        return transactionalWithResult(entityManager ->
+                entityManager.merge(user));
+    }
+
+    @Override
+    public void deleteById(Long userId) {
+        transactional(entityManager -> {
             User user = entityManager.find(User.class, userId);
             if (user != null) {
                 entityManager.remove(user);
@@ -72,8 +67,8 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
     }
 
     @Override
-    public void deleteById(Long userId) {
-        executeInsideTransaction(entityManager -> {
+    public void disableUser(Long userId) {
+        transactional(entityManager -> {
             User user = entityManager.find(User.class, userId);
             user.setIsActive(false);
             entityManager.merge(user);
@@ -82,13 +77,13 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
 
     @Override
     public Collection<User> findAll() {
-        try (EntityManager entityManager = emf.createEntityManager()) {
-            return entityManager.createQuery("from User", User.class)
-                    .getResultList();
-        }
+        return transactionalWithResult(entityManager -> {
+            TypedQuery<User> query = entityManager.createQuery("from User", User.class);
+            return query.getResultList();
+        });
     }
 
-    private void executeInsideTransaction(Consumer<EntityManager> action) {
+    private void transactional(Consumer<EntityManager> action) {
         EntityTransaction transaction = null;
         try (EntityManager entityManager = emf.createEntityManager()) {
             transaction = entityManager.getTransaction();
@@ -98,17 +93,24 @@ public class UserUserRepositoryImpl implements UserRepository<User> {
         } catch (RuntimeException e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
-                throw e;
             }
+            throw e;
         }
     }
 
-    private String readUnitName() {
-        UnitName annotation = User.class.getAnnotation(UnitName.class);
-        if (annotation != null) {
-            return annotation.name();
-        } else {
-            throw new IllegalStateException("Must declare unit name in the entity class");
+    private <T> T transactionalWithResult(Function<EntityManager, T> action) {
+        EntityTransaction transaction = null;
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            T result = action.apply(entityManager);
+            transaction.commit();
+            return result;
+        } catch (RuntimeException e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
         }
     }
 }

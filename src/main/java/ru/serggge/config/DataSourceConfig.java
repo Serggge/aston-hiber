@@ -1,5 +1,6 @@
 package ru.serggge.config;
 
+import ru.serggge.App;
 import java.util.Properties;
 import static org.hibernate.cfg.JdbcSettings.*;
 import static org.hibernate.cfg.SchemaToolingSettings.HBM2DDL_AUTO;
@@ -10,7 +11,8 @@ public class DataSourceConfig {
     private DataSourceConfig() {
     }
 
-    public static Properties getProperties(Profile profile) {
+    public static Properties getProperties() {
+        Profile profile = App.profile;
         return switch (profile) {
             case DEVELOPMENT, TEST -> developmentProperties();
             case PRODUCTION -> productionProperties();

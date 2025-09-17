@@ -3,7 +3,6 @@ package ru.serggge.util;
 import ru.serggge.command.*;
 import ru.serggge.dao.UserRepository;
 import ru.serggge.dao.UserUserRepositoryImpl;
-import ru.serggge.entity.User;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class CommandHolder {
 
     // Блок инициализации. Инстанцируем репозиторий и добавляем объекты команды для каждого CRUDa
     private static Map<Button, Command> initCommands() {
-        UserRepository<User> repository = new UserUserRepositoryImpl();
+        UserRepository repository = new UserUserRepositoryImpl();
         Map<Button, Command> commands = new HashMap<>();
         commands.put(Button.EXIT, new ExitCommand());
         commands.put(Button.CREATE, new CreateUserCommand(repository));

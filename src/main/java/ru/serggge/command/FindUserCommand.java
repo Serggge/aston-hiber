@@ -9,7 +9,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FindUserCommand implements Command {
 
-    private final UserRepository<User> repository;
+    private final UserRepository repository;
 
     @Override
     public void execute() {
@@ -30,10 +30,10 @@ public class FindUserCommand implements Command {
     }
 
     private Optional<User> findActiveUser(Long userId) {
-        return repository.findById(userId);
+        return repository.findActiveUser(userId);
     }
 
     private Optional<User> findHiddenAndActive(Long userId) {
-        return repository.findByIdIgnoreActivity(userId);
+        return repository.findById(userId);
     }
 }

@@ -1,9 +1,11 @@
 package ru.serggge;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.serggge.command.*;
 import ru.serggge.config.Profile;
 import ru.serggge.util.*;
 
+@Slf4j
 public class App {
 
     //  переменная, позволяющий менять настройки конфигурации в зависимости от среды выполнения
@@ -25,7 +27,7 @@ public class App {
                 commandHolder.get(operation).execute();
             } catch (RuntimeException e) {
                 // обрабатываем выброшенные исключения
-                ExceptionHandler.handle(e);
+                log.warn("Error occurred: {}", e.getMessage());
             }
         }
     }

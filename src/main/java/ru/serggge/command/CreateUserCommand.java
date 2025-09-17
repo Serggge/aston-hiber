@@ -10,7 +10,7 @@ import ru.serggge.util.ConsoleReader;
 @Slf4j
 public class CreateUserCommand implements Command {
 
-    private final UserRepository<User> repository;
+    private final UserRepository repository;
 
     @Override
     public void execute() {

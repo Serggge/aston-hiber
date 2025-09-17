@@ -3,14 +3,13 @@ package ru.serggge.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.serggge.dao.UserRepository;
-import ru.serggge.entity.User;
 import ru.serggge.util.ConsoleReader;
 
 @RequiredArgsConstructor
 @Slf4j
 public class DeleteUserCommand implements Command {
 
-    private final UserRepository<User> repository;
+    private final UserRepository repository;
 
     @Override
     public void execute() {
@@ -26,12 +25,12 @@ public class DeleteUserCommand implements Command {
     }
 
     private void eraseFromDatabase(Long userId) {
-        repository.eraseById(userId);
+        repository.deleteById(userId);
         log.info("User deleted");
     }
 
     private void setInactive(Long userId) {
-        repository.deleteById(userId);
+        repository.disableUser(userId);
         log.info("User deactivated");
     }
 }
