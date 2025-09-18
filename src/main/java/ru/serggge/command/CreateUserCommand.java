@@ -11,6 +11,7 @@ import ru.serggge.util.ConsoleReader;
 public class CreateUserCommand implements Command {
 
     private final UserRepository repository;
+    private final ConsoleReader consoleReader;
 
     @Override
     public void execute() {
@@ -26,18 +27,18 @@ public class CreateUserCommand implements Command {
     private String name() {
         // считываем из консоли имя сущности
         System.out.println("Enter name:");
-        return ConsoleReader.readStringValue();
+        return consoleReader.readStringValue();
     }
 
     private String email() {
         // считываем из консоли почтовый адрес сущности
         System.out.println("Enter email:");
-        return ConsoleReader.readStringValue();
+        return consoleReader.readStringValue();
     }
 
     private int age() {
         // считываем из консоли возраст сущности
         System.out.println("Enter age:");
-        return ConsoleReader.readIntValue();
+        return consoleReader.readIntValue();
     }
 }

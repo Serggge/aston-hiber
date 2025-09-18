@@ -12,14 +12,11 @@ public class ConsoleReader {
     private static final String ANSWER_NO = "N";
     private static final Scanner scanner = new Scanner(System.in);
 
-    private ConsoleReader() {
-    }
-
-    public static String readStringValue() {
+    public String readStringValue() {
         return scanner.next();
     }
 
-    public static Long readLongValue() {
+    public Long readLongValue() {
         String userInput = readStringValue();
         try {
             return Long.parseLong(userInput);
@@ -28,7 +25,7 @@ public class ConsoleReader {
         }
     }
 
-    public static Integer readIntValue() {
+    public Integer readIntValue() {
         String userInput = readStringValue();
         try {
             return Integer.parseInt(userInput);
@@ -37,7 +34,7 @@ public class ConsoleReader {
         }
     }
 
-    public static boolean readBooleanValue() {
+    public boolean readBooleanValue() {
         String userInput = scanner.next();
         return switch (userInput.toUpperCase()) {
             case "Y" -> true;
@@ -48,7 +45,7 @@ public class ConsoleReader {
         };
     }
 
-    public static Button readOperation() {
+    public Button readOperation() {
         // считываем в стандартном потоке ввода желаемую CRUD операцию, возвращаем соответствующий енум
         String userInput = readStringValue();
         try {

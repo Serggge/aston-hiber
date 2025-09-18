@@ -11,6 +11,7 @@ import ru.serggge.util.ConsoleReader;
 public class UpdateUserCommand implements Command {
 
     private final UserRepository repository;
+    private final ConsoleReader consoleReader;
 
     @Override
     public void execute() {
@@ -28,21 +29,21 @@ public class UpdateUserCommand implements Command {
 
     private Long userId() {
         System.out.println("Enter user id: ");
-        return ConsoleReader.readLongValue();
+        return consoleReader.readLongValue();
     }
 
     private String name() {
         System.out.println("Enter new name:");
-        return ConsoleReader.readStringValue();
+        return consoleReader.readStringValue();
     }
 
     private String email() {
         System.out.println("Enter new email:");
-        return ConsoleReader.readStringValue();
+        return consoleReader.readStringValue();
     }
 
     private Integer age() {
         System.out.println("Enter new age:");
-        return ConsoleReader.readIntValue();
+        return consoleReader.readIntValue();
     }
 }

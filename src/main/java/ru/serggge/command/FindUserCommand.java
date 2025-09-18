@@ -10,15 +10,16 @@ import java.util.Optional;
 public class FindUserCommand implements Command {
 
     private final UserRepository repository;
+    private final ConsoleReader consoleReader;
 
     @Override
     public void execute() {
         System.out.println("Enter user ID:");
         // считываем из консоли айди сущности для поиска в БД
-        Long userId = ConsoleReader.readLongValue();
+        Long userId = consoleReader.readLongValue();
         System.out.println("Search for inactive users? (Y/N)");
         // опция поиска пользователей только активных или всех ранее добавленных в БД
-        boolean isConfirmed = ConsoleReader.readBooleanValue();
+        boolean isConfirmed = consoleReader.readBooleanValue();
         Optional<User> user;
         if (isConfirmed) {
             user = findHiddenAndActive(userId);

@@ -4,18 +4,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
 import ru.serggge.entity.User;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@RequiredArgsConstructor
 public class UserUserRepositoryImpl implements UserRepository {
 
     private final EntityManagerFactory emf;
-
-    public UserUserRepositoryImpl() {
-        this.emf = DataSourceFactory.forEntityClass(User.class);
-    }
 
     @Override
     public User save(User user) {

@@ -8,21 +8,19 @@ import ru.serggge.util.*;
 @Slf4j
 public class App {
 
-    //  переменная, позволяющий менять настройки конфигурации в зависимости от среды выполнения
-    public static Profile profile;
-
     public static void main(String[] args) {
         // определяем профиль, с которым выполняется приложение (DEVELOP/PRODUCTION)
-        profile = CommandLineProcessor.readProfile(args);
+        Profile profile = CommandLineProcessor.readProfile(args);
         // создаём объект, который будет управлять командами, обрабатывающими CRUD операции
-        CommandHolder commandHolder = new CommandHolder();
+        CommandHolder commandHolder = new CommandHolder(profile);
         // выполняем в бесконечном цикле, пока пользователь не выберет "Выход"
         while (true) {
             // печать в консоль информационного меню пользователя
             commandHolder.get(Button.PRINT_MENU).execute();
             try {
                 // здесь пользователь вводит CRUD операцию, которую хочет выполнить
-                Button operation = ConsoleReader.readOperation();
+                ConsoleReader consoleReader = new ConsoleReader();
+                Button operation = consoleReader.readOperation();
                 // здесь выполняем её через соответствующий объект команды
                 commandHolder.get(operation).execute();
             } catch (RuntimeException e) {

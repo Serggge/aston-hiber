@@ -10,13 +10,14 @@ import ru.serggge.util.ConsoleReader;
 public class DeleteUserCommand implements Command {
 
     private final UserRepository repository;
+    private final ConsoleReader consoleReader;
 
     @Override
     public void execute() {
         System.out.println("Enter user ID:");
-        long userId = ConsoleReader.readLongValue();
+        long userId = consoleReader.readLongValue();
         System.out.println("Delete user permanently? (Y/N)");
-        boolean isConfirmed = ConsoleReader.readBooleanValue();
+        boolean isConfirmed = consoleReader.readBooleanValue();
         if (isConfirmed) {
             eraseFromDatabase(userId);
         } else {

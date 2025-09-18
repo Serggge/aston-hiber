@@ -12,12 +12,6 @@ import java.time.Instant;
 @NoArgsConstructor
 public class User implements Serializable {
 
-    public User(@NonNull String name, @NonNull String email, @NonNull Integer age) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter
@@ -30,4 +24,10 @@ public class User implements Serializable {
     @Column(name = "active", insertable = false)
     @Setter
     private Boolean isActive;
+
+    public User(@NonNull String name, @NonNull String email, @NonNull Integer age) {
+        this.name = name;
+        this.email = email;
+        this.age = age;
+    }
 }

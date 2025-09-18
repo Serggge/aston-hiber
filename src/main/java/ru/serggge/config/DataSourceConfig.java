@@ -1,18 +1,18 @@
 package ru.serggge.config;
 
+import lombok.RequiredArgsConstructor;
 import ru.serggge.App;
 import java.util.Properties;
 import static org.hibernate.cfg.JdbcSettings.*;
 import static org.hibernate.cfg.SchemaToolingSettings.HBM2DDL_AUTO;
 
 // конфигурация проперти для EntityMangerFactory (для разных сред развёртывания)
+@RequiredArgsConstructor
 public class DataSourceConfig {
 
-    private DataSourceConfig() {
-    }
+    private final Profile profile;
 
-    public static Properties getProperties() {
-        Profile profile = App.profile;
+    public Properties getProperties() {
         return switch (profile) {
             case DEVELOPMENT, TEST -> developmentProperties();
             case PRODUCTION -> productionProperties();
