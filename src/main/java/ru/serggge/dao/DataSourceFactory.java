@@ -25,7 +25,7 @@ public class DataSourceFactory {
         } else {
             try {
                 lock.lock();
-                Properties dataSourceProperties = new DataSourceConfig(profile).getProperties();
+                Properties dataSourceProperties = DataSourceConfig.getProperties(profile);
                 EntityManagerFactory emf = dataSources.getOrDefault(entityClass,
                         new Configuration()
                                 .setProperties(dataSourceProperties) // проперти из конфига

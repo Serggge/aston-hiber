@@ -12,7 +12,7 @@ public class App {
         // определяем профиль, с которым выполняется приложение (DEVELOP/PRODUCTION)
         Profile profile = CommandLineProcessor.readProfile(args);
         // создаём объект, который будет управлять командами, обрабатывающими CRUD операции
-        CommandHolder commandHolder = new CommandHolder(profile, new ConsoleReader());
+        CommandHolder commandHolder = new CommandHolder(profile);
         // выполняем в бесконечном цикле, пока пользователь не выберет "Выход"
         while (true) {
             // печать в консоль информационного меню пользователя

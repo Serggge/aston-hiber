@@ -1,17 +1,16 @@
 package ru.serggge.config;
 
-import lombok.RequiredArgsConstructor;
 import java.util.Properties;
 import static org.hibernate.cfg.JdbcSettings.*;
 import static org.hibernate.cfg.SchemaToolingSettings.HBM2DDL_AUTO;
 
 // конфигурация проперти для EntityMangerFactory (для разных сред развёртывания)
-@RequiredArgsConstructor
 public class DataSourceConfig {
 
-    private final Profile profile;
+    private DataSourceConfig() {
+    }
 
-    public Properties getProperties() {
+    public static Properties getProperties(Profile profile) {
         return switch (profile) {
             case DEVELOPMENT -> developmentProperties();
             case PRODUCTION -> productionProperties();
@@ -45,13 +44,6 @@ public class DataSourceConfig {
     }
 
     private static Properties testingProperties() {
-        Properties properties = new Properties();
-        properties.put(JAKARTA_JDBC_DRIVER, "org.postgresql.Driver");
-        properties.put(JAKARTA_HBM2DDL_DB_NAME, "testdb");
-        properties.put(JAKARTA_JDBC_URL, "jdbc:postgresql://${POSTGRES_URL}:${POSTGRES_PORT}/${POSTGRES_DB");
-        properties.put(JAKARTA_JDBC_USER, "postgres");
-        properties.put(JAKARTA_JDBC_PASSWORD, "postgres");
-        properties.put(HBM2DDL_AUTO, "create-drop");
-        return properties;
+        return developmentProperties();
     }
 }

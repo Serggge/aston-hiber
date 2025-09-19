@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CommandsTest {
+public class UnitTest {
 
     @Mock
     UserUserRepositoryImpl repository;
@@ -40,7 +40,7 @@ public class CommandsTest {
     void givenNewUser_whenExecuteOnCreateUserCommand_thenUserSavedInRepository() {
         // given
         final String username = "username";
-        final String email = "user@eamil.org";
+        final String email = "user@email.org";
         final Integer age = ThreadLocalRandom.current().nextInt(1, 100);
         User user = new User(username, email, age);
         // метод readStringValue() вызывается у мока 2 раза
