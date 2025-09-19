@@ -13,9 +13,11 @@ import java.util.Map;
 public class CommandHolder {
 
     private final Map<Button, Command> commands;
+    private final ConsoleReader consoleReader;
 
-    public CommandHolder(Profile profile) {
+    public CommandHolder(Profile profile, ConsoleReader consoleReader) {
         this.commands = initCommands(profile);
+        this.consoleReader = consoleReader;
     }
 
     public Command get(Button button) {
@@ -23,9 +25,8 @@ public class CommandHolder {
     }
 
     // Блок инициализации. Инстанцируем репозиторий и добавляем объекты команды для каждого CRUDa
-    private static Map<Button, Command> initCommands(Profile profile) {
+    private Map<Button, Command> initCommands(Profile profile) {
         EntityManagerFactory emf = DataSourceFactory.forEntityClass(User.class, profile);
-        ConsoleReader consoleReader = new ConsoleReader();
         UserRepository repository = new UserUserRepositoryImpl(emf);
 
         Map<Button, Command> commands = new HashMap<>();

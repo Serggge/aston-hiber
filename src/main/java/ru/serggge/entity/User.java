@@ -9,6 +9,7 @@ import java.time.Instant;
 @Table(name = "users")
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 public class User implements Serializable {
 

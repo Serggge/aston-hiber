@@ -1,7 +1,6 @@
 package ru.serggge.config;
 
 import lombok.RequiredArgsConstructor;
-import ru.serggge.App;
 import java.util.Properties;
 import static org.hibernate.cfg.JdbcSettings.*;
 import static org.hibernate.cfg.SchemaToolingSettings.HBM2DDL_AUTO;
@@ -14,8 +13,9 @@ public class DataSourceConfig {
 
     public Properties getProperties() {
         return switch (profile) {
-            case DEVELOPMENT, TEST -> developmentProperties();
+            case DEVELOPMENT -> developmentProperties();
             case PRODUCTION -> productionProperties();
+            case TEST -> testingProperties();
         };
     }
 
@@ -41,6 +41,17 @@ public class DataSourceConfig {
         properties.put(JAKARTA_JDBC_PASSWORD, "${POSTGRES_PASSWORD}");
         properties.put(DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         properties.put(HBM2DDL_AUTO, "update");
+        return properties;
+    }
+
+    private static Properties testingProperties() {
+        Properties properties = new Properties();
+        properties.put(JAKARTA_JDBC_DRIVER, "org.postgresql.Driver");
+        properties.put(JAKARTA_HBM2DDL_DB_NAME, "testdb");
+        properties.put(JAKARTA_JDBC_URL, "jdbc:postgresql://${POSTGRES_URL}:${POSTGRES_PORT}/${POSTGRES_DB");
+        properties.put(JAKARTA_JDBC_USER, "postgres");
+        properties.put(JAKARTA_JDBC_PASSWORD, "postgres");
+        properties.put(HBM2DDL_AUTO, "create-drop");
         return properties;
     }
 }
