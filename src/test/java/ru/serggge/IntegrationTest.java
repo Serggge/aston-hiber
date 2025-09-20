@@ -2,7 +2,7 @@ package ru.serggge;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityTransaction;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
@@ -26,7 +26,6 @@ import static org.hibernate.cfg.JdbcSettings.JAKARTA_JDBC_PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
-@Transactional
 public class IntegrationTest {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres");
@@ -60,26 +59,27 @@ public class IntegrationTest {
 
     @BeforeEach
     void setUp() {
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.createQuery("DELETE FROM User")
+                    .executeUpdate();
+            transaction.commit();
+        }
     }
 
     @Test
     @DisplayName("Create new user")
-    void givenNewUser_whenExecuteOnCreateCommand_thenNewUserCreated() {
+    void givenNewUser_whenExecuteOnCreateCommand_thenNewUserPersistToDatabase() {
         // given
         final String username = "John";
         final String email = "john@email.org";
-        final Integer age = ThreadLocalRandom.current()
-                                             .nextInt(1, 100);
+        final Integer age = ThreadLocalRandom.current().nextInt(1, 100);
         // метод readStringValue() вызывается у мока 2 раза
         // через счётчик вызовов настраиваем ответ мока
-        UnitTest.InvokeCounter invokeCounter = new UnitTest.InvokeCounter();
-        when(consoleReader.readStringValue()).thenAnswer(invocationOnMock -> {
-            if (invokeCounter.count++ == 0) {
-                return username;
-            } else {
-                return email;
-            }
-        });
+        InvokeCounter invokeCounter = new InvokeCounter();
+        when(consoleReader.readStringValue()).thenAnswer(invocationOnMock ->
+                invokeCounter.count++ == 0 ? username : email);
         when(consoleReader.readIntValue()).thenReturn(age);
 
         // when
@@ -102,11 +102,134 @@ public class IntegrationTest {
         );
     }
 
+
+    @Test
+    @DisplayName("Find user")
+    void givenUserId_whenExecuteOnFindCommand_thenReturnUser() {
+        //given
+        final User user = generateUser();
+        saveToDatabase(user);
+
+        when(consoleReader.readLongValue()).thenReturn(user.getId());
+        when(consoleReader.readBooleanValue()).thenReturn(true);
+
+        // when
+        commandHolder.get(Button.FIND)
+                     .execute();
+
+        // then
+        List<User> allUsers = getAllUsers();
+        assertThat(allUsers, hasSize(1));
+    }
+
+    @Test
+    @DisplayName("Update user")
+    void givenUserWithUpdatedFields_whenExecuteOnUpdateCommand_thenUpdateUserIntoDatabase() {
+        //given
+        User originalUser = generateUser();
+        saveToDatabase(originalUser);
+
+        // заготовки ответов для мока ConsoleReader
+        final long userId = originalUser.getId();
+        final String newName = "Katty";
+        final String newEmail = "katty@email.org";
+        final Integer newAge = ThreadLocalRandom.current().nextInt(1, 100);
+
+        when(consoleReader.readLongValue()).thenReturn(userId);
+        // метод readStringValue() вызывается у мока 2 раза
+        // через счётчик вызовов настраиваем ответ мока
+        InvokeCounter invokeCounter = new InvokeCounter();
+        when(consoleReader.readStringValue()).thenAnswer(invocationOnMock ->
+                invokeCounter.count++ == 0 ? newName : newEmail);
+        when(consoleReader.readIntValue()).thenReturn(newAge);
+
+        // when
+        commandHolder.get(Button.UPDATE)
+                     .execute();
+
+        // then
+        User persistenceUser = findById(userId);
+
+        assertAll("Check user properties",
+                () -> assertThat(persistenceUser.getName(), equalTo(newName)),
+                () -> assertThat(persistenceUser.getEmail(), equalTo(newEmail)),
+                () -> assertThat(persistenceUser.getAge(), is(newAge))
+        );
+    }
+
+    @Test
+    @DisplayName("Delete user")
+    void givenUserId_whenExecuteOnDeleteCommand_thenDeleteUserFromDatabase() {
+        //given
+        User user = generateUser();
+        saveToDatabase(user);
+        long userId = user.getId();
+
+        when(consoleReader.readLongValue()).thenReturn(userId);
+        when(consoleReader.readBooleanValue()).thenReturn(true);
+
+        // when
+        commandHolder.get(Button.DELETE)
+                     .execute();
+
+        // then
+        List<User> allUsers = getAllUsers();
+        User checkedUser = findById(userId);
+
+        assertThat(allUsers, empty());
+        assertThat(checkedUser, nullValue());
+    }
+
+    @Test
+    @DisplayName("Deactivate user")
+    void givenUserId_whenExecuteOnDeleteCommand_thenSetUserActivityFalse() {
+        //given
+        User user = generateUser();
+        saveToDatabase(user);
+        long userId = user.getId();
+
+        when(consoleReader.readLongValue()).thenReturn(userId);
+        when(consoleReader.readBooleanValue()).thenReturn(false);
+
+        // when
+        commandHolder.get(Button.DELETE)
+                     .execute();
+
+        // then
+        List<User> allUsers = getAllUsers();
+        User checkedUser = findById(userId);
+
+        assertThat(allUsers, hasSize(1));
+        assertThat(checkedUser.getIsActive(), is(false));
+    }
+
+    User findById(Long userId) {
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            return entityManager.find(User.class, userId);
+        }
+    }
+
+    void saveToDatabase(User user) {
+        try (EntityManager entityManager = emf.createEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(user);
+            transaction.commit();
+        }
+    }
+
     List<User> getAllUsers() {
         try (EntityManager entityManager = emf.createEntityManager()) {
             return entityManager.createQuery("from User", User.class)
                                 .getResultList();
         }
+    }
+
+    private User generateUser() {
+        final String username = "User" + ThreadLocalRandom.current().nextInt();
+        final String email = username + "@email.org";
+        final int age = ThreadLocalRandom.current().nextInt(1, 100);
+        return new User(username, email, age);
     }
 
     static Properties testContainerProperties() {
@@ -116,5 +239,9 @@ public class IntegrationTest {
         properties.put(JAKARTA_JDBC_USER, postgres.getUsername());
         properties.put(JAKARTA_JDBC_PASSWORD, postgres.getPassword());
         return properties;
+    }
+
+    static class InvokeCounter {
+        int count;
     }
 }

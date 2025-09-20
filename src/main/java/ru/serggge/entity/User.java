@@ -24,7 +24,7 @@ public class User implements Serializable {
     private Instant createdAt;
     @Column(name = "active", insertable = false)
     @Setter
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     public User(@NonNull String name, @NonNull String email, @NonNull Integer age) {
         this.name = name;
